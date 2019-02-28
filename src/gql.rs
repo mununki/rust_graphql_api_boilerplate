@@ -1,9 +1,11 @@
 extern crate juniper;
+extern crate bcrypt;
 
 use super::db::*;
 use super::models::*;
 use diesel::prelude::*;
 use juniper::FieldResult;
+use bcrypt::{DEFAULT_COST, hash, verify};
 
 #[derive(Clone)]
 pub struct Context {}
@@ -17,6 +19,7 @@ graphql_object!(Query:Context |&self|{
         use super::schema::myusers::dsl::*;
 
         let connection = establish_connection();
+
         let users = myusers.limit(5).load::<MyUsers>(&connection)?;
 
         Ok(users)
@@ -30,17 +33,23 @@ graphql_object!(Mutation:Context |&self|{
         
         use super::schema::myusers;
 
-        // let new_user.created_at = Some(Local::now().naive_local());
-        // let new_user.updated_at = Some(Local::now().naive_local());
-
         let connection = establish_connection();
 
+        let hashed = hash(&new_user.password, DEFAULT_COST)?;
+
+        let hashed_new_user = NewUser{
+            email:new_user.email,
+            first_name:new_user.first_name,
+            last_name:new_user.last_name,
+            password:hashed,
+            bio:new_user.bio,
+        };
+
         let user = diesel::insert_into(myusers::table)
-            .values(&new_user)
+            .values(&hashed_new_user)
             .get_result(&connection)
             .expect("Error saving new user");
 
             Ok(user)
     }
 });
-
