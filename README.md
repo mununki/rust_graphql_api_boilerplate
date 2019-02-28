@@ -11,8 +11,10 @@ This is a boilerplate built with Rust.
 ## Stacks
 
 - Rust
-- [Warp](https://github.com/seanmonstar/warp)
-- [Juniper](https://github.com/graphql-rust/juniper)
+- [Warp](https://github.com/seanmonstar/warp): Web server framework
+- [Juniper](https://github.com/graphql-rust/juniper): GraphQL library
+- [Diesel](https://github.com/diesel-rs/diesel): ORM
+- DB: Postgres
 
 ## Next to do
 
