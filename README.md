@@ -93,7 +93,8 @@ mutation {
 ```
 
 > Change Password
-> Note: JSON web token is needed to be sent as `authorization` in header.
+
+Note: JSON web token is needed to be sent as `authorization` in header.
 
 ```graphql
 mutation {
@@ -113,7 +114,8 @@ mutation {
 ```
 
 > Change Profile
-> Note: JSON web token is needed to be sent as `authorization` in header.
+
+Note: JSON web token is needed to be sent as `authorization` in header.
 
 ```graphql
 mutation {
@@ -141,3 +143,8 @@ mutation {
 - [x] ERROR HANDLING (important!)
 - [ ] Optimizing the multithread
 - [ ] Deploy using Docker after compile
+
+## References
+
+- http://alex.amiran.it/post/2018-08-16-rust-graphql-webserver-with-warp-juniper-and-mongodb.html
+- https://github.com/graphql-rust/juniper/tree/master/juniper_warp
