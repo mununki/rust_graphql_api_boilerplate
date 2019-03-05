@@ -1,7 +1,8 @@
 extern crate chrono;
 extern crate diesel;
 
-use super::models::{MyUsers, NewUser, UpdateUser};
+use super::models::{MyUsers};
+use super::gql_types::{NewUser, UpdateUser};
 use super::schema;
 use chrono::prelude::*;
 use diesel::pg::PgConnection;

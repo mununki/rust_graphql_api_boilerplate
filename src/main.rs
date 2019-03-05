@@ -6,6 +6,7 @@ extern crate rust_graphql_api_boilerplate;
 extern crate warp;
 
 use rust_graphql_api_boilerplate::gql::{Context, Mutation, Query};
+use rust_graphql_api_boilerplate::jwt::verify_jwt;
 use std::sync::Arc;
 use warp::{filters::BoxedFilter, Filter};
 
@@ -14,12 +15,10 @@ type Schema = juniper::RootNode<'static, Query, Mutation>;
 fn main() {
     pretty_env_logger::init();
 
-    let ctx = Context {};
-
     let schema = Schema::new(Query, Mutation);
 
     let gql_index = warp::get2().and(warp::path::end()).and_then(web_index);
-    let gql_query = make_graphql_filter("query", schema, ctx);
+    let gql_query = make_graphql_filter("query", schema);
 
     let routes = gql_index.or(gql_query);
     warp::serve(routes)
@@ -34,26 +33,31 @@ fn web_index() -> Result<impl warp::Reply, warp::Rejection> {
         .expect("response is valid"))
 }
 
-// need to check `r2d2` crate for supply the persistent db connection later
-// fn context_factory(request: &mut Request) -> Context {
-//     Context {
-//         db: establish_connection(),
-//     }
-// }
-
-fn make_graphql_filter<Query, Mutation, Context>(
+fn make_graphql_filter<Query, Mutation>(
     path: &'static str,
     schema: juniper::RootNode<'static, Query, Mutation>,
-    ctx: Context,
 ) -> BoxedFilter<(impl warp::Reply,)>
 where
-    Context: juniper::Context + Send + Sync + Clone + 'static,
     Query: juniper::GraphQLType<Context = Context, TypeInfo = ()> + Send + Sync + 'static,
     Mutation: juniper::GraphQLType<Context = Context, TypeInfo = ()> + Send + Sync + 'static,
 {
     let schema = Arc::new(schema);
 
-    let context_extractor = warp::any().map(move || -> Context { ctx.clone() });
+    let context_extractor = warp::any().and(
+        warp::header::<String>("authorization")
+            .map(|token: String| -> Context {
+                let token_data = match verify_jwt(token) {
+                    Ok(t) => t,
+                    Err(_) => return Context { user_id: None },
+                };
+
+                Context {
+                    user_id: Some(token_data.claims.user_id),
+                }
+            })
+            .or(warp::any().map(|| Context { user_id: None }))
+            .unify(),
+    );
 
     let handle_request = move |context: Context,
                                request: juniper::http::GraphQLRequest|

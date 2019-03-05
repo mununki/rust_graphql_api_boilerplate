@@ -30,7 +30,7 @@ $ cargo run --bin rust_graphql_api_boilerplate
 
 - [x] User Sign up
 - [x] Hash User Password - with [bcrypt](https://github.com/Keats/rust-bcrypt) crate
+- [x] User Sign in based on Token authentication
 - [ ] User profile Update
-- [ ] User Sign in based on Token authentication
 - [ ] Optimizing multi threads operation
 - [ ] ERROR HANDLING (important!)

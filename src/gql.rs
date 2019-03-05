@@ -3,33 +3,55 @@ extern crate bcrypt;
 
 use super::db::*;
 use super::models::*;
+use super::gql_types::*;
 use diesel::prelude::*;
 use juniper::FieldResult;
 use bcrypt::{DEFAULT_COST, hash, verify};
+use super::jwt::{encode_jwt};
 
-#[derive(Clone)]
-pub struct Context {}
+#[derive(Clone, Debug)]
+pub struct Context {
+    pub user_id: Option<i32>,
+}
 
 impl juniper::Context for Context {}
 
 pub struct Query;
 
 graphql_object!(Query:Context |&self|{
-    field users() -> FieldResult<Vec<MyUsers>>{
+    field getMyProfile(&executor) -> FieldResult<Vec<MyUsers>>{
         use super::schema::myusers::dsl::*;
+
+        let user_id = match executor.context().user_id{
+            Some(user_id) => user_id,
+            None => 0
+        };
 
         let connection = establish_connection();
 
-        let users = myusers.limit(5).load::<MyUsers>(&connection)?;
+        let profile = myusers.filter(id.eq(user_id)).load::<MyUsers>(&connection)?;
 
-        Ok(users)
+        Ok(profile)
     }
 });
 
 pub struct Mutation;
 
 graphql_object!(Mutation:Context |&self|{
-    field createUser(new_user: NewUser) -> FieldResult<MyUsers> {
+    field signIn(email:String, password:String) -> FieldResult<TokenResponse>{
+
+        use super::schema::myusers::dsl::*;
+
+        let connection = establish_connection();
+
+        let user_id = myusers.filter(email.eq(email)).select(id).first(&connection)?;
+
+        let token = encode_jwt(user_id, 30);
+
+        Ok(TokenResponse{token:Some(token)})
+    }
+
+    field signUp(new_user: NewUser) -> FieldResult<MyUsers> {
         
         use super::schema::myusers;
 
@@ -50,6 +72,6 @@ graphql_object!(Mutation:Context |&self|{
             .get_result(&connection)
             .expect("Error saving new user");
 
-            Ok(user)
+        Ok(user)
     }
 });
