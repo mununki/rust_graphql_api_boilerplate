@@ -11,4 +11,3 @@ pub mod gql_types;
 pub mod jwt;
 pub mod models;
 pub mod schema;
-pub mod user;

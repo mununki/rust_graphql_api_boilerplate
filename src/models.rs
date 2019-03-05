@@ -3,7 +3,7 @@ extern crate chrono;
 use chrono::prelude::*;
 
 #[derive(Queryable, GraphQLObject, Debug)]
-pub struct MyUsers {
+pub struct MyUser {
     pub id: i32,
     pub email: String,
     pub fist_name: String,

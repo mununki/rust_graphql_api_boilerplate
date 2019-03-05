@@ -15,22 +15,126 @@ This is a boilerplate built with Rust.
 - [Juniper](https://github.com/graphql-rust/juniper) - GraphQL library
 - [Diesel](https://github.com/diesel-rs/diesel) - ORM
 - DB: Postgres
+- JSON Web Token : Authentication
 
 ## Run
 
 ```shell
 $ git clone https://github.com/mattdamon108/rust_graphql_api_boilerplate
+$ cd rust_graphql_api_boilerplate
+$ echo DATABASE_URL=postgres://username:password@localhost/rust_boilerplate > .env
+$ diesel setup
 $ diesel migration run
-$ cargo run --bin rust_graphql_api_boilerplate
+$ cargo run
 ```
 
-> Connect to 127.0.0.1:3030 with browser
+> GraphiQL : connect to 127.0.0.1:3030 with browser
+
+## Schema
+
+### Query
+
+```graphql
+query {
+  getMyProfile {
+    ok
+    error
+    user {
+      id
+      email
+      first_name
+      last_name
+      bio
+      avatar
+    }
+  }
+}
+```
+
+> Note: JSON web token is needed to be sent as `authorization` in header.
+
+### Mutation
+
+> Sign Up
+
+```graphql
+mutation {
+  signUp(
+    email: "test@test.com"
+    password: "12345678"
+    firstName: "graphql"
+    lastName: "rust"
+  ) {
+    ok
+    error
+    user {
+      id
+      email
+      first_name
+      last_name
+      bio
+      avatar
+    }
+  }
+}
+```
+
+> Sign In
+
+```graphql
+mutation {
+  signIn(email: "test@test.com", password: "12345678") {
+    token
+  }
+}
+```
+
+> Change Password
+> Note: JSON web token is needed to be sent as `authorization` in header.
+
+```graphql
+mutation {
+  changePassword(password: "87654321") {
+    ok
+    error
+    user {
+      id
+      email
+      first_name
+      last_name
+      bio
+      avatar
+    }
+  }
+}
+```
+
+> Change Profile
+> Note: JSON web token is needed to be sent as `authorization` in header.
+
+```graphql
+mutation {
+  changeProfile(bio: "Rust fan") {
+    ok
+    error
+    user {
+      id
+      email
+      first_name
+      last_name
+      bio
+      avatar
+    }
+  }
+}
+```
 
 ## Next to do
 
 - [x] User Sign up
 - [x] Hash User Password - with [bcrypt](https://github.com/Keats/rust-bcrypt) crate
 - [x] User Sign in based on Token authentication
-- [ ] User profile Update
-- [ ] Optimizing multi threads operation
-- [ ] ERROR HANDLING (important!)
+- [x] User profile Update
+- [x] ERROR HANDLING (important!)
+- [ ] Optimizing the multithread
+- [ ] Deploy using Docker after compile

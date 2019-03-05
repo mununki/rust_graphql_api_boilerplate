@@ -1,3 +1,4 @@
+use super::models::MyUser;
 use super::schema::myusers;
 
 #[derive(Insertable, GraphQLInputObject)]
@@ -8,6 +9,7 @@ pub struct NewUser {
     pub last_name: String,
     pub password: String,
     pub bio: Option<String>,
+    pub avatar: Option<String>,
 }
 
 #[derive(AsChangeset)]
@@ -22,4 +24,18 @@ pub struct UpdateUser {
 #[derive(GraphQLObject, Debug)]
 pub struct TokenResponse {
     pub token: Option<String>,
+}
+
+#[derive(GraphQLObject, Debug)]
+pub struct UsersResponse {
+    pub ok: bool,
+    pub error: Option<String>,
+    pub users: Option<Vec<MyUser>>,
+}
+
+#[derive(GraphQLObject, Debug)]
+pub struct UserResponse {
+    pub ok: bool,
+    pub error: Option<String>,
+    pub user: Option<MyUser>,
 }
