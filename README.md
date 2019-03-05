@@ -4,9 +4,12 @@ This is a boilerplate built with Rust.
 
 ## Features
 
-- User Sign up
-- User Sign in
-- User profile Update
+- DB migration with Diesel
+- Sign up
+- Sign in
+- Change password
+- Profile Update
+- JSON web token authentication
 
 ## Stacks
 
