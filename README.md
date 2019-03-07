@@ -31,6 +31,19 @@ $ diesel migration run
 $ cargo run
 ```
 
+## Build with Docker
+
+```shell
+$ docker build -t rust_gql .
+$ docker run --rm -d -p 3030:3030 --name running_rust_gql rust_gql
+```
+
+> Change the listening port from `127.0.0.1` to `0.0.0.0` in `main.rs`. Because rust GraphQL API in docker container needs to listen to `0.0.0.0` instead of local interfase in order to access to the API from host.
+
+```shell
+$ docker build -t rust_gql_boilerplate .
+```
+
 > GraphiQL : connect to 127.0.0.1:3030 with browser
 
 ## Schema
@@ -141,10 +154,11 @@ mutation {
 - [x] User Sign in based on Token authentication
 - [x] User profile Update
 - [x] ERROR HANDLING (important!)
+- [x] Deploy using Docker after compile
 - [ ] Optimizing the multithread
-- [ ] Deploy using Docker after compile
 
 ## References
 
 - http://alex.amiran.it/post/2018-08-16-rust-graphql-webserver-with-warp-juniper-and-mongodb.html
 - https://github.com/graphql-rust/juniper/tree/master/juniper_warp
+- https://blog.jawg.io/docker-multi-stage-build/

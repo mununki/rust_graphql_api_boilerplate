@@ -23,7 +23,7 @@ fn main() {
     let routes = gql_index.or(gql_query);
     warp::serve(routes)
         .unstable_pipeline()
-        .run(([127, 0, 0, 1], 3030))
+        .run(([127, 0, 0, 1], 3030)) // in case of using docker, 0,0,0,0
 }
 
 fn web_index() -> Result<impl warp::Reply, warp::Rejection> {
