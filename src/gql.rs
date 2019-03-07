@@ -5,7 +5,7 @@ use super::db::*;
 use super::gql_types::*;
 use super::jwt::encode_jwt;
 use super::models::*;
-use bcrypt::{hash, verify, DEFAULT_COST};
+use bcrypt::{hash, verify};
 use diesel::prelude::*;
 use juniper::FieldResult;
 
@@ -63,7 +63,7 @@ graphql_object!(Mutation:Context |&self|{
         use super::schema::myusers;
         let connection = establish_connection();
 
-        let hashed = hash(&password, DEFAULT_COST)?;
+        let hashed = hash(&password, 10)?;
 
         let hashed_new_user = NewUser{
             email:email,
@@ -93,7 +93,7 @@ graphql_object!(Mutation:Context |&self|{
             None => return Ok(UserResponse{ok:false, error:Some("Login required".to_string()), user:None}),
         };
 
-        let hashed_new_password = match hash(&password, DEFAULT_COST){
+        let hashed_new_password = match hash(&password, 10){
             Ok(pw)=>pw,
             _ => return Ok(UserResponse{ok:false, error: Some("Error hashing password".to_string()), user:None})
         };
@@ -125,3 +125,14 @@ graphql_object!(Mutation:Context |&self|{
         }
     }
 });
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bench_bcrypt() {
+        let hashed = hash("1234", 10);
+        println!("hased_pw: {:?}", hashed)
+    }
+}

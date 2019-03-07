@@ -52,7 +52,10 @@ mod tests {
 
     #[test]
     fn verify_token() {
-        let token = encode_jwt(1, 30);
+        let token = match encode_jwt(1, 30) {
+            Ok(t) => t,
+            _ => return println!("Test failed!"),
+        };
         println!("token: {:?}", &token);
         println!("output: {:?}", verify_jwt(token))
     }
