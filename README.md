@@ -38,11 +38,7 @@ $ docker build -t rust_gql .
 $ docker run --rm -d -p 3030:3030 --name running_rust_gql rust_gql
 ```
 
-> Change the listening port from `127.0.0.1` to `0.0.0.0` in `main.rs`. Because rust GraphQL API in docker container needs to listen to `0.0.0.0` instead of local interfase in order to access to the API from host.
-
-```shell
-$ docker build -t rust_gql_boilerplate .
-```
+> Change the listening port from `127.0.0.1` to `0.0.0.0` in `main.rs`. Because rust GraphQL API in docker container needs to listen to `0.0.0.0` instead of local interfase in order for host to access to the API.
 
 > GraphiQL : connect to 127.0.0.1:3030 with browser
 
