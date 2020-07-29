@@ -22,6 +22,8 @@ This is a boilerplate built with Rust.
 
 ## Run
 
+### Without Docker
+
 ```shell
 $ git clone https://github.com/mattdamon108/rust_graphql_api_boilerplate
 $ cd rust_graphql_api_boilerplate
@@ -31,14 +33,14 @@ $ diesel migration run
 $ cargo run
 ```
 
-## Build with Docker
+### Build with Docker
 
 ```shell
 $ docker build -t rust_gql .
 $ docker run --rm -d -p 3030:3030 --name running_rust_gql rust_gql
 ```
 
-> Change the listening port from `127.0.0.1` to `0.0.0.0` in `main.rs`. Because rust GraphQL API in docker container needs to listen to `0.0.0.0` instead of local interfase in order for host to access to the API.
+> Change the listening port from `127.0.0.1` to `0.0.0.0` in `main.rs`. Because rust GraphQL API in docker container needs to listen to `0.0.0.0` instead of local interface in order for host to access to the API.
 
 > GraphiQL : connect to 127.0.0.1:3030 with browser
 
